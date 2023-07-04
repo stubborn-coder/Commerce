@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  {% if owner and listing.active %}
+  <form action="{% url 'closelisting' listing.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Close Auction</button>
+  </form>
+  {% elif not owner and listing.active %}
+  <h3>Listing is open</h3>
+  {% else %}
+   <h2>The winner is</h2>
+  {% endif %}
+  <h2> {{ listing.title }} </h2>
+  <p> {{ listing.description }}</p>
+  {% if listing.image %}
+    <img src="{{ media_url }}{{ listing.image }}" alt="">
+
+  {% else %}
+   <h2>No image</h2>  
+  {% endif %}
+  {% if exists %}
+  <form action="{% url 'removefromwatchlist' listing.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Remove from WatchList</button>
+  </form>
+  {% else %}
+    <form action="{% url 'addtowatchlist' listing.id %}" method="post">
+      {% csrf_token %}
+    <button type="submit">Add to WatchList</button>
+    </form>
+  {% endif %}
+
+  {% if listing.active %}
+  <form action="{% url 'placebid' listing.id %}" method="post">
+    {% csrf_token %}
+    {{ bidform }}
+    <button type="submit">Place bid</button>
+  </form>
+  
+  {% else %}
+    <h3> The auction of the item has ended. Winner will be announced.</h3>
+  {% endif %}
+  <h4>Bidinfo</h4>
+  <p>$ {{ bidinfo.highestbid }} by {{ bidinfo.highestbiduser}}</p>
+
+  <h3>Comments</h3>
+  {% for comment in comments %} 
+  <div class="border">
+    <h4>{{ comment.comment }}</h4>
+    <h5> {{ comment.commentby }}</h5>
+  </div>
+
+  {% endfor %}
+  <form action="{% url 'addcomment' listing.id %}" method="post">
+    {% csrf_token %}
+    {{ commentform }}
+    
+    <button type="submit">submit</button>
+  </form>
+{% endblock %}

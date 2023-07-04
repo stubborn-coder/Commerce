@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+ <h2> WatchList</h2>
+
+  {% for listing in watchlists %}
+  <div class="border">
+    <h3><a href="{% url 'listing' listing.auctionlisting.id %}"> {{ listing.auctionlisting.title }}</a></h3>
+    <p> {{ listing.auctionlisting.description }}</p>
+    <h4> ${{ listing.auctionlisting.starting_bid }}</h4>
+    <h5> {{ listing.auctionlisting.category }}</h5>
+    {% if listing.auctionlisting.image %}
+    <img src="{{ media_url }}{{ listing.auctionlisting.image }}" alt="">
+
+    {% else %}
+     <h2>No image</h2>  
+    {% endif %}
+
+</div>
+  {% endfor %}
+ 
+{% endblock %}
